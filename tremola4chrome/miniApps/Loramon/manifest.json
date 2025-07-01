@@ -1,7 +1,7 @@
 {
-    "name": "loramon",
-    "description": "LoRamon is a simple application that allows users to express their emotions through a button click.",
-    "icon": "assets/loramon.svg",
+    "name": "LoRamon",
+    "description": "LoRamon is a Pokémon inspired game for the Tremola App.",
+    "icon": "assets/loramon.png",
     "init": "initLoramon()",
     "id": "loramon",
     "cssFile": "resources/loramon.css",
