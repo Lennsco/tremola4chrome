@@ -1,0 +1,24 @@
+{
+    "name": "loramon",
+    "description": "LoRamon is a simple application that allows users to express their emotions through a button click.",
+    "icon": "assets/loramon.svg",
+    "init": "initLoramon()",
+    "id": "loramon",
+    "cssFile": "resources/loramon.css",
+    "scripts": [
+    "src/loramon.js"
+    ],
+    "htmlFile": "resources/loramon.html",
+    "scenario": {
+    "loramon-screen": {
+    "menu": {
+    "Settings": "menu_settings",
+    "About": "menu_about"
+    },
+    "display": [
+    "div:back",
+    "div:loramon-screen"
+    ]
+    }
+    }
+}
