@@ -115,13 +115,3 @@ window.miniApps["loramon"] = {
     }
 };
 
-// Dummy implementations for your invitation + friend confirm flows
-function inviteLoramonFriend() {
-    console.log("Inviting a friend for LoRamon...");
-    launchContactsMenu("LoRamon Battle", "Pick a friend to challenge!");
-}
-
-function confirmLoramonFriend() {
-    console.log("Friend confirmed, proceeding to team selection...");
-    // Store selected friend in your app state for later use
-}
