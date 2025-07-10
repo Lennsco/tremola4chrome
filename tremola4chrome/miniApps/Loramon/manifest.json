@@ -2,23 +2,26 @@
     "name": "LoRamon",
     "description": "LoRamon is a Pokémon inspired game for the Tremola App.",
     "icon": "assets/loramon.png",
-    "init": "initLoramon()",
+    "init": "setLoramonScenario('loramon-title-menu')",
     "id": "loramon",
     "cssFile": "resources/loramon.css",
     "scripts": [
-    "src/loramon.js"
+    "src/loramon.js",
+    "src/loramon_ui.js"
     ],
     "htmlFile": "resources/loramon.html",
     "scenario": {
-    "loramon-screen": {
-    "menu": {
-    "Settings": "menu_settings",
-    "About": "menu_about"
+    "loramon-title-menu": {
+        "menu": { "Settings": "menu_settings", "About": "menu_about" },
+        "display": ["div:back", "core", "div:loramon-title-menu", "plus"]
     },
-    "display": [
-    "div:back",
-    "div:loramon-screen"
-    ]
+    "loramon-select-team": {
+        "menu": { "Settings": "menu_settings", "About": "menu_about" },
+        "display": ["div:back", "core", "div:loramon-select-team"]
+    },
+    "loramon-battle-scene": {
+        "menu": { "Settings": "menu_settings", "About": "menu_about" },
+        "display": ["div:back", "core", "div:loramon-battle-scene"]
     }
-    }
+}
 }

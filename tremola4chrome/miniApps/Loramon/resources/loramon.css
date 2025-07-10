@@ -2,10 +2,9 @@
     position: absolute;
     top: 50%;
     left: 50%;
-    background-image: url("/assets/backgroundLoramon.png");
-    /*background: rgba(255, 255, 255, 0.9);*/
-    background-size: cover;
-    background-position: center;
+    background: rgba(255, 255, 255, 0.9);
+    /* background-size: cover;
+    background-position: center; */
     border-radius: 12px;
     padding: 24px;
     text-align: center;
@@ -26,3 +25,16 @@
    #div\:loramon-screen button {
    color: black;
 }
+#loramon-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('/assets/backgroundLoramon.png');
+    background-size: cover;
+    background-position: center;
+    z-index: -1; /* behind UI elements */
+    display: none; /* hidden by default */
+}
+
