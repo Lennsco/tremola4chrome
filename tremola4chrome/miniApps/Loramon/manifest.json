@@ -7,7 +7,8 @@
     "cssFile": "resources/loramon.css",
     "scripts": [
     "src/loramon.js",
-    "src/loramon_ui.js"
+    "src/loramon_ui.js",
+    "src/loramonfight.js"
     ],
     "htmlFile": "resources/loramon.html",
     "scenario": {

@@ -1,27 +1,79 @@
-<!--div id="div:loramon-screen" style="display: none;">
-    <div id="loramon-title">
-    LoRamon miniApp
-    </div>
-    <div id="div:loramon-prompt">
-    LoRamon!
-    </div>
-    <button style="height: 30px;"
-onclick="registerLoramon()">loramon</button>
-</div -->>
 <div id="div:loramon-list"></div>
 <div id="loramon-background"></div>
+
 <div id="div:loramon-title-menu" style="display:none;">
     <div id="loramon-title">LoRamon Title Menu</div>
     <button onclick="inviteLoramonFriend()">Invite Friend</button>
-
 </div>
 
 <div id="div:loramon-select-team" style="display:none;">
     <div id="loramon-title">Select Your Team</div>
-    <!-- add selectable monster UI here -->
+    
+    <select id="playerChoice">
+      <option value="appko">🌿AppKo</option>
+      <option value="bluebert">💧Bluebert</option>
+      <option value="chillguy">💧ChillGuy</option>
+      <option value="eggvance">🔥EggVance</option>
+      <option value="lophin">💧Lophin</option>
+      <option value="mysticaltree">🌿MysticalTree</option>
+      <option value="ssio">💧SSIO</option>
+      <option value="sundoomer">🔥SunDoomer</option>
+      <option value="swagoli">🌿Swagoli</option>
+      <option value="ugandan">🔥Ugandan Knuckles</option>
+    </select>
+
+    <button onclick="updateLoramonImage()">Choose!</button>
+    
+    <div id="selectionResult" style="margin-top: 20px;">
+      <img id="loramon1" src="" alt="Your Loramon:" width="150" style="display:none;" />
+    </div>
+
+    <button id="fightButton" style="display:none;" onclick="startBattleScene()">Fight!</button>
 </div>
 
 <div id="div:loramon-battle-scene" style="display:none;">
     <div id="loramon-title">Battle Scene</div>
-    <!-- add battle animations + logic display here -->
+
+    <div class="battle-screen">
+        <div class="top-section">
+            <div class="enemy-info">
+                <div class="info-box">
+                    <div class="name-level">
+                        <span id="enemy-name">Enemy</span>
+                        <span id="enemy-level">Lv99</span>
+                    </div>
+                    <div class="hp-bar">
+                        HP: <progress id="enemy-hp" max="100" value="100"></progress><span id="enemy-hp-text">100/100</span>
+                    </div>
+                </div>
+                <img id="enemy" src="" class="enemy-loramon" width="130" height="130" />
+            </div>
+        </div>
+
+        <div class="bottom-section">
+            <img id="player" src="" class="player-loramon" width="130" height="130" />
+            <div class="player-info">
+                <div class="info-box">
+                    <div class="name-level">
+                        <span id="player-name">Player</span>
+                        <span id="player-level">Lv99</span>
+                    </div>
+                    <div class="hp-bar">
+                        HP: <progress id="player-hp" max="100" value="100"></progress><span id="player-hp-text">100/100</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="battle-menu">
+            <div class="menu-grid">
+                <button onclick="attack()">FIGHT!</button>
+                <button disabled>LoRàMon</button>
+                <button onclick="resetGame()">Run away!</button>
+            </div>
+        </div>
+    </div>
 </div>
+
+<script src="../src/loramonfight.js"></script>
+
