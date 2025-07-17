@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>LoRaMon Battle</title>
+  <link rel="stylesheet" href="loramonfight.css" />
+  <style>
+    #battle img {
+      height: 200px;
+      margin: 10px;
+    }
+    #battle {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .loramon-row {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+    }
+    progress {
+      width: 100px;
+    }
+    .battle-screen {
+      display: none;
+    }
+    #loramon1 {
+      display: none;
+    }
+    #fightButton {
+      display: none;
+    }
+    #team-panel {
+    position: fixed; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    background: #ffffffee;
+    padding: 20px 30px;
+    border: 2px solid #333; border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,.3);
+    display: none;              /* hidden by default */
+    z-index: 1000;
+    }
+    #team-list { display: flex; gap: 20px; }
+    #team-list img { width: 120px; height: 120px; }
+  </style>
+</head>
+<body>
+  <div id="div:loramon-screen">
+    <h1>LoRàMon Fight!</h1>
+
+    <select id="playerChoice1">
+      <option value="appko">🌿AppKo</option>
+      <option value="aliendog">🌿Aliendog</option>
+      <option value="bluebert">💧Bluebert</option>
+      <option value="chillguy">💧ChillGuy</option>
+      <option value="eggvance">🔥EggVance</option>
+      <option value="lophin">💧Lophin</option>
+      <option value="mysticaltree">🌿MysticalTree</option>
+      <option value="ssio">💧SSIO</option>
+      <option value="sundoomer">🔥SunDoomer</option>
+      <option value="swagoli">🌿Swagoli</option>
+      <option value="ugandan">🔥Ugandan Knuckles</option>
+    </select>
+
+<select id="playerChoice2">
+      <option value="appko">🌿AppKo</option>
+      <option value="aliendog">🌿Aliendog</option>
+      <option value="bluebert">💧Bluebert</option>
+      <option value="chillguy">💧ChillGuy</option>
+      <option value="eggvance">🔥EggVance</option>
+      <option value="lophin">💧Lophin</option>
+      <option value="mysticaltree">🌿MysticalTree</option>
+      <option value="ssio">💧SSIO</option>
+      <option value="sundoomer">🔥SunDoomer</option>
+      <option value="swagoli">🌿Swagoli</option>
+      <option value="ugandan">🔥Ugandan Knuckles</option>
+    </select>
+
+
+<select id="playerChoice3">
+      <option value="appko">🌿AppKo</option>
+      <option value="aliendog">🌿Aliendog</option>
+      <option value="bluebert">💧Bluebert</option>
+      <option value="chillguy">💧ChillGuy</option>
+      <option value="eggvance">🔥EggVance</option>
+      <option value="lophin">💧Lophin</option>
+      <option value="mysticaltree">🌿MysticalTree</option>
+      <option value="ssio">💧SSIO</option>
+      <option value="sundoomer">🔥SunDoomer</option>
+      <option value="swagoli">🌿Swagoli</option>
+      <option value="ugandan">🔥Ugandan Knuckles</option>
+    </select>
+
+
+    <button onclick="updateLoramonImage()">Choose!</button>
+    
+   <div id="selectionResult" style="margin-top: 20px; display: flex; gap: 5px;">
+  <img id="loramon1" src="" alt="Your LoRàMons:" width="150" />
+  <img id="loramon2" src="" alt="" width="150" />
+  <img id="loramon3" src="" alt="" width="150" />
+</div>
+
+    <button id="fightButton" onclick="battleLoramon()">Fight!</button>
+  </div>
+
+  <div class="battle-screen">
+  <div id="battle-message" style="position: absolute; top: 20%; left: 50%; transform: translateX(-50%); 
+    font-size: 12px; font-weight: bold;"></div>
+    <!-- Enemy side -->
+    <div class="top-section">
+      <div class="enemy-info">
+        <div class="info-box">
+          <div class="name-level">
+            <span id="enemy-name">Enemy</span>
+                      </div>
+          <div class="hp-bar">
+            HP: <progress id="enemy-hp" max="100" value="100"></progress><span id="enemy-hp-text">100/100</span>
+          </div>
+        </div>
+        <img id="enemy" src="" class="enemy-loramon" width="160" 
+     height="160" />
+      </div>
+    </div>
+
+    <!-- Player side -->
+    <div class="bottom-section">
+      <img id="player" src="" class="player-loramon" width="160" 
+     height="160" />
+      <div class="player-info">
+        <div class="info-box">
+          <div class="name-level">
+            <span id="player-name">Player</span>
+            
+          </div>
+          <div class="hp-bar">
+            HP: <progress id="player-hp" max="100" value="100"></progress> <span id="player-hp-text">100/100</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Battle menu -->
+    <div class="battle-menu">
+      <div class="menu-grid">
+        <button onclick="attackButton()">Attack!</button>
+        <button onclick="toggleTeam()">LoRàMons</button>
+        <button onclick="resetGame()">Run away!</button>
+      </div>
+    </div>
+  </div>
+
+<div id="team-panel">
+  <h3>Your Team</h3>
+  <div id="team-display" style="display: flex; gap: 10px;"></div>
+ <button onclick="toggleTeam()">Close</button>
+</div>
+
+
+<script src="../src/loramonfight.js"></script>
+</body>
+</html>

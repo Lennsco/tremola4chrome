@@ -6,9 +6,11 @@
     "id": "loramon",
     "cssFile": "resources/loramon.css",
     "scripts": [
-    "src/loramon.js",
-    "src/loramon_ui.js",
-    "src/loramonfight.js"
+    "src/glerp.js",
+    "src/glerp_ui.js",
+    "src/loramonfight.js",
+    "src/loramonfight.css",
+    "src/lobby.js"
     ],
     "htmlFile": "resources/loramon.html",
     "scenario": {

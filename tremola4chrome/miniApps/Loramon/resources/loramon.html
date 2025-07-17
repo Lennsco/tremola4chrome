@@ -9,7 +9,7 @@
 <div id="div:loramon-select-team" style="display:none;">
     <div id="loramon-title">Select Your Team</div>
     
-    <select id="playerChoice">
+    <select id="playerChoice1">
       <option value="appko">🌿AppKo</option>
       <option value="aliendog">🌿Aliendog</option>
       <option value="bluebert">💧Bluebert</option>
@@ -51,20 +51,24 @@
       <option value="ugandan">🔥Ugandan Knuckles</option>
     </select>
 
-    <button onclick="updateLoramonImage()">Choose!</button>
+    <button onclick="setLoramonTeam()">Choose!</button>
     
-    <div id="selectionResult" style="margin-top: 20px;">
+    <div id="selectionResult" style="margin-top: 20px; display: flex; gap: 20px;">
       <img id="loramon1" src="" alt="Your Loramon:" width="150" style="display:none;" />
       <img id="loramon2" src="" alt="" width="150" />
       <img id="loramon3" src="" alt="" width="150" />
     </div>
+    <!-- <button id="fightButton" style="display:none;" onclick="startBattleScene()">Fight!</button>>
 
-    <button id="fightButton" style="display:none;" onclick="startBattleScene()">Fight!</button>
+        anstatt startBattleScene eine zwischenfunktion die wartet, bis der gegner auch ein team gewählt hat-->
+
+    <button id="fightButton" style="display:none;" onclick="readyForFight()">Fight!</button>
+    <div id="fightLabel" class="waiting-for-friend" style="display: none;">Waiting for friend to choose loramons...</div>
 </div>
 
 <div id="div:loramon-battle-scene" style="display:none;">
-    <div id="loramon-title">Battle Scene</div>
-    <div id="battle-message" style="position: absolute; top: 20%; left: 50%; transform: translateX(-50%); 
+    <!--div id="loramon-title">Battle Scene</div-->
+    <div id="battle-message" style="position: absolute; top: 10%; left: 50%; transform: translateX(-50%); 
     font-size: 12px; font-weight: bold;"></div>
 
     <div class="battle-screen">
@@ -100,13 +104,31 @@
 
         <div class="battle-menu">
             <div class="menu-grid">
-                <button onclick="attack()">FIGHT!</button>
-                <button disabled>LoRàMon</button>
+                <button onclick="attackMove()">FIGHT!</button>
+                <button onclick="toggleTeam()">LoRàMons</button>
                 <button onclick="resetGame()">Run away!</button>
             </div>
         </div>
     </div>
+
+    <img id="attack-animation" 
+     src="" 
+     style="position: absolute; display: none; width: 350px; height: auto; z-index: 999;" 
+     alt="Attack Animation" />
 </div>
+
+<div id="team-panel" style="display:none;">
+  <h3>Your Team</h3>
+  <div id="team-display" style="display: flex; gap: 10px;"></div>
+ <button onclick="toggleTeam()">Close</button>
+</div>
+
+<audio id="battle-music" loop>
+  <!--source src="../miniApps/LoRamon/assets/BWLTheme.mp3" type="audio/mpeg" /-->
+  <source src="../miniApps/LoRamon/assets/battleMusic.mp3" type="audio/mpeg" />
+  Your browser does not support the audio element.
+  Credits: Cody O'Quinn https://youtu.be/y7MNEZsRJ5o?si=FrCFKbIqcs1s6Cvu
+</audio>
 
 <script src="../src/loramonfight.js"></script>
 

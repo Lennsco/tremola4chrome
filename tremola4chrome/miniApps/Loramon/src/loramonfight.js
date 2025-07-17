@@ -1,9 +1,9 @@
 let playerLoramon = null;
 let enemyLoramon = null;
 let battleInterval = null;
-let playerTeam = [];
+var playerTeam = [0, 0, 0];
 let currentPlayerIndex = 0;
-let enemyTeam = [];
+var enemyTeam = [0, 0, 0];
 let currentEnemyIndex = 0;
 let isTeamPanelOpen = false;
 
@@ -145,10 +145,8 @@ class Loramon {
         this.id = id;
         this.sprite = sprite; 
         this.back = back;
-
     }
 
-    
 
     attack(target){
            
@@ -171,53 +169,65 @@ class Loramon {
         return effectiveness;
     }
     
-
     isAlive(){
         if (this.hp > 0){
             return true;
         } else {
             return false;
         }
-        
     }
 }
 
-function updateLoramonImage() {
+function updateLoramonImage(player) {
     console.log("Function called!"); // Check if function is being called
     // 3 pokemon teams
     const choice1 = document.getElementById("playerChoice1").value;
-    if (choice1) addLoramonToTeam(choice1, 0, "loramon1");
+    console.log("choise 1", choice1);
+    if (choice1){
+        addLoramonToTeam(choice1, 0, "loramon1", player);
+    } 
 
     const choice2 = document.getElementById("playerChoice2").value;
-    if (choice2) addLoramonToTeam(choice2, 1, "loramon2");
+    console.log("choise 2", choice2);
+    if (choice2) {
+        addLoramonToTeam(choice2, 1, "loramon2", player);
+    }
 
     const choice3 = document.getElementById("playerChoice3").value;
-    if (choice3) addLoramonToTeam(choice3, 2, "loramon3");
+    console.log("choise 3", choice3);
+    if (choice3) {
+        addLoramonToTeam(choice3, 2, "loramon3", player);
+    }
 
-    if (playerTeam.length === 3) {
+    const allNonZero = lobby.get_team_by_id(myId).every(x => x !== 0);
+
+    if (playerTeam.length === 3 && allNonZero) {
         currentPlayerIndex = 0;
         playerLoramon      = playerTeam[currentPlayerIndex];
         document.getElementById("fightButton").style.display = "inline-block";
+        enemyTeamCallback();
     }
 }
 
-function addLoramonToTeam(key, slotIndex, imgId) {
+function addLoramonToTeam(key, slotIndex, imgId, player) {
     const data = LORAMON_DATA[key];
     if (!data) {
         console.error("Invalid choice:", key);
         return;
     }
     // Check if this Loramon is already in the team
-    const alreadyInTeam = playerTeam.some(loramon => loramon?.id === data.id);
+    let team = lobby.get_team_by_id(player);
+    const alreadyInTeam = team.some(loramon => loramon?.id === data.id);
     if (alreadyInTeam) {
         // Only show alert if trying to add to a different slot
-        if (!playerTeam[slotIndex] || playerTeam[slotIndex].id !== data.id) {
+        if (!team[slotIndex] || team[slotIndex].id !== data.id) {
             alert(`${data.name} is already in your team!`);
+            return;
         }
         return false;
     }
     // Create or replace the slot
-    playerTeam[slotIndex] = new Loramon(
+    let chosenLoramon = new Loramon(
         data.name,
         data.hp,
         data.maxhp,
@@ -228,6 +238,9 @@ function addLoramonToTeam(key, slotIndex, imgId) {
         data.back     // Back sprite second
     );
 
+    lobby.set_loramon_by_id(player, chosenLoramon, slotIndex);
+    playerTeam[slotIndex] = chosenLoramon;
+
     const img = document.getElementById(imgId);
     if (img) {
         img.src = data.sprite;
@@ -236,42 +249,35 @@ function addLoramonToTeam(key, slotIndex, imgId) {
     }
 }
 
-function buildEnemyTeam() {
-    enemyTeam = []; // Clear existing team
-   
-    const taken = new Set();
-    // Get IDs of player's team to exclude
-    const playerIds = playerTeam.map(loramon => loramon.id);
-    // Get available Loramon keys (excluding player's team)
-    const availableLoramon = Object.values(LORAMON_DATA).filter(
-        loramon => !playerIds.includes(loramon.id)
-    );
-    // Randomly select 3 distinct Loramon from available pool
-    const selected = [];
-    while (selected.length < 3 && availableLoramon.length > 5) { //this is a super weird solution for limiting the 3 loramon limit. i couldnt manage the 3 loramon limit. 
-        const randomIndex = Math.floor(Math.random() * availableLoramon.length);
-        const selectedData = availableLoramon[randomIndex];
-        // Create new Loramon instance
-        enemyTeam.push(new Loramon(
-            selectedData.name,
-            selectedData.hp,
-            selectedData.maxhp,
-            selectedData.element,
-            selectedData.attackPower,
-            selectedData.id,
-            selectedData.sprite,
-            selectedData.back
-        ));
-        // Remove from available pool to prevent duplicates
-        availableLoramon.splice(randomIndex, 1);
+function buildEnemyTeam(team) {
+    for (let i = 0; i < team.length; i++) {
+        const singleKey = team[i];
+        const data = LORAMON_DATA[singleKey];
+
+        let slotIndex = i;
+
+        if (!data) {
+            console.error("Invalid choice:", singleKey);
+            return;
+        } 
+
+        let chosenLoramon = new Loramon(
+            data.name,
+            data.hp,
+            data.maxhp,
+            data.element,
+            data.attackPower,
+            data.id,
+            data.sprite,  // Front sprite first
+            data.back     // Back sprite second
+        );
+        
+        let player = '';
+        player = lobby.return_other_id(myId);
+        lobby.set_loramon_by_id(player, chosenLoramon, slotIndex);
     }
-    // Set first enemy
-        currentEnemyIndex = 0;
-        enemyLoramon = enemyTeam[0];
-        updateBattleUI();
-    currentEnemyIndex = 0;
-    enemyLoramon = enemyTeam[0];
 }
+
 //helper function, not really necessary
 function preloadImages() {
   Object.values(LORAMON_DATA).forEach(loramon => {
@@ -281,23 +287,23 @@ function preloadImages() {
 }
 //for starting to battle, not the atack
 function battleLoramon(){
-    preloadImages();
-
-    if (battleInterval) clearInterval(battleInterval);
-    //if not chosen 3 loramons
-    if (playerTeam.length !== 3|| playerTeam.some(loramon => !loramon)) {
-        alert("Pick all three of your Loramons first!");
-        return;
-    }
-    buildEnemyTeam();
+    let player = '';
+    player = lobby.return_other_id(myId);
+    enemyTeam = lobby.get_team_by_id(player);
+    playerTeam = lobby.get_team_by_id(myId);
     currentPlayerIndex = 0;
     currentEnemyIndex  = 0;
+
     playerLoramon = playerTeam[currentPlayerIndex];
     enemyLoramon = enemyTeam[currentEnemyIndex];
 
+    preloadImages();
+
+    if (battleInterval) clearInterval(battleInterval);
+
     // Update UI
-    document.getElementById("div:loramon-screen").style.display = "none";
-    document.querySelector(".battle-screen").style.display = "block";
+    document.getElementById("div:loramon-select-team").style.display = "none";
+    document.getElementById("div:loramon-battle-scene").style.display = "block";
     
     // Set sprites
     img1 = document.getElementById("player");
@@ -306,18 +312,18 @@ function battleLoramon(){
     img1.src = playerLoramon.back; 
     img2.src = enemyLoramon.sprite;
     
+    console.log("path to sprite: ", img2.src);
+
     // Set names
     document.getElementById("player-name").textContent = playerLoramon.name;
     document.getElementById("enemy-name").textContent = enemyLoramon.name;
     
     // Initialize HP bars
     updateBattleUI();   
+
+    playBackgroundMusic()
 }
-//just for the attackbutton
-function attackButton(){
-    attack();
-    //enemyLoramon.attack(playerLoramon);
-}
+
 //for choosing other loramons during battle
 function switchLoramon(slot) {
     /* slot = 0,1,2  (buttons or <select> can call switchLoramon(1), etc.) */
@@ -348,42 +354,15 @@ function updateHpBars() {
     document.getElementById("enemy-hp").max    =
         enemyLoramon.maxhp;
 }
-//only for the automatic battle version, that if attack, it attacks back
-function performBattleTurn() {
-   // Check if battle should continue
-    if (!playerLoramon.isAlive()) {
-        if (battleInterval) clearInterval(battleInterval);
-        handlePlayerFaint();
-        return;
-    }
-    if (!enemyLoramon.isAlive()) {
-        if (battleInterval) clearInterval(battleInterval);
-        handleEnemyFaint();
-        return;
-    }
-    // Player attacks
-    playerLoramon.attack(enemyLoramon);
-    updateBattleUI();
 
-    // Check if enemy fainted
-    if (!enemyLoramon.isAlive()) {
-        if (battleInterval) clearInterval(battleInterval);
-        setTimeout(handleEnemyFaint, 500);
-        return;
-    }
-    // Enemy counterattack after delay
-    setTimeout(() => {
-        if (!playerLoramon.isAlive() || !enemyLoramon.isAlive()) return;
-        
-        enemyLoramon.attack(playerLoramon);
-        updateBattleUI();
+function updateSelectedLoramon(){
+    currentPlayerIndex = 0;
+    currentEnemyIndex  = 0;
 
-        if (!playerLoramon.isAlive()) {
-            if (battleInterval) clearInterval(battleInterval);
-            setTimeout(handlePlayerFaint, 500);
-        }
-    }, 750);
+    playerLoramon = playerTeam[currentPlayerIndex];
+    enemyLoramon = enemyTeam[currentEnemyIndex];
 }
+
 function updateBattleUI() {
     if (playerLoramon) {
         const playerImg = document.getElementById("player");
@@ -415,46 +394,13 @@ function updateBattleUI() {
         displayTeam();
     }
 }
+
 function attack() {
-    // this is wihtout balancing functioning code. 
-    /*if (!playerLoramon || !enemyLoramon) {
-        console.error("Battle not properly initialized!");
-        return;
-    }
-    if (!playerLoramon.isAlive()) {
-        handlePlayerFaint();
-        return;
-    }
-    if (!enemyLoramon.isAlive()) {
-        handleEnemyFaint();
-        return;
-    }
-    // attack
-    playerLoramon.attack(enemyLoramon);
-    updateBattleUI();
-
-    //enemy status after attack
-    if (!enemyLoramon.isAlive()) {
-        setTimeout(() => handleEnemyFaint(), 500);
-        return;
-    }
-
-    setTimeout(() => {
-        //check conditions after delay
-        if (!playerLoramon || !playerLoramon.isAlive() || 
-            !enemyLoramon || !enemyLoramon.isAlive()) {
-            return;
-        }
-        
-        enemyLoramon.attack(playerLoramon);
-        updateBattleUI();
-
-        if (!playerLoramon.isAlive()) {
-            setTimeout(() => handlePlayerFaint(), 500);
-        }
-    }, 1000);*/
+    console.log("Checking if both loramons aren't null: ", playerTeam, enemyTeam);
     if (!playerLoramon?.isAlive() || !enemyLoramon?.isAlive()) return;
      
+    displayAttack(playerLoramon);
+
     // Player attacks
     const effectiveness = playerLoramon.attack(enemyLoramon);
     showEffectivenessMessage(effectiveness);
@@ -466,18 +412,25 @@ function attack() {
         setTimeout(() => handleEnemyFaint(), 1000);
         return;
     }
-    // Enemy counterattack after delay, its 500 for realistic, but it doesnt need waiting for spamming. old minecraft style spam possible
-    setTimeout(() => {
-        if (!playerLoramon?.isAlive()) return;
-        
-        const enemyEffectiveness = enemyLoramon.attack(playerLoramon);
-        showEffectivenessMessage(enemyEffectiveness);
-        
-        if (!playerLoramon.isAlive()) {
-            setTimeout(() => handlePlayerFaint(), 1000);
-        }
-    }, 500);
 }
+
+function getAttacked() {
+    if (!playerLoramon?.isAlive() || !enemyLoramon?.isAlive()) return;
+
+    displayAttack(playerLoramon); // should be the receiving end, displayGetAttacked()
+     
+    const effectiveness = enemyLoramon.attack(playerLoramon);
+    showEffectivenessMessage(effectiveness);
+    if (!playerTeam || playerTeam.length === 0) {
+        console.error("No player team exists!");
+        return;
+    }
+    if (!playerLoramon.isAlive()) {
+        setTimeout(() => handlePlayerFaint(), 1000);
+        return;
+    }
+}
+
 function handleEnemyFaint() {
    if (!enemyLoramon) return;
     //alert(`${enemyLoramon.name} fainted!`); too much alerts yk, got ugly af
@@ -610,6 +563,8 @@ function showEffectivenessMessage(effectiveness) {
 function resetGame() { //we go back to select screen, no save, nothing
     document.getElementById("div:loramon-screen").style.display = "block";
     document.querySelector(".battle-screen").style.display = "none";
+
+    stopBackgroundMusic()
     
     // Reset Loramon selection
     document.getElementById("loramon1").style.display = "none";
@@ -621,4 +576,64 @@ function resetGame() { //we go back to select screen, no save, nothing
     enemyTeam  = [];
     playerLoramon = null;
     enemyLoramon  = null;
+}
+
+
+function displayAttack(loramonAttack){
+    const animation = document.getElementById("attack-animation");
+    let duration;
+    let attackAnimation = "";
+    switch (loramonAttack.element){
+        case "fire":
+            attackAnimation = "../miniApps/LoRamon/assets/fire.gif";
+            animation.src = attackAnimation;
+            animation.style.display = "block";
+            animation.style.left = "170px";
+            animation.style.top = "100px";
+            setTimeout(() => {
+            animation.style.display = "none";
+            },4300);
+            break;
+        case "water":
+            //attackAnimation = "../assets/water.gif";
+            attackAnimation = "../miniApps/LoRamon/assets/water.gif";
+            animation.src = attackAnimation;
+            animation.style.display = "block";
+            animation.style.left = "270px";
+            animation.style.top = "10px";
+            setTimeout(() => {
+            animation.style.display = "none";
+            },3500)
+            break;
+        case "plant":
+            attackAnimation = "../miniApps/LoRamon/assets/pflanze.gif";
+            console.log("printing path: ", document.currentScript.src);
+            animation.src = attackAnimation;
+            animation.style.display = "block";
+            animation.style.left = "150px";
+            animation.style.top = "150px";
+            setTimeout(() => {
+            animation.style.display = "none";
+            },1250)
+            break;
+        default:
+            console.warn("Unknown Loramon type: ", loramonAttack.element);
+        }
+}
+
+
+function playBackgroundMusic(){
+    const music = document.getElementById("battle-music");
+    if(music){
+        music.volume = 0.5;
+        music.play().catch(err => console.warn("Playing Music blocked: ", err));
+    }
+}
+
+function stopBackgroundMusic(){
+    const music = document.getElementById("battle-music");
+    if(music){
+        music.pause();
+        music.currentTime = 0; // rewind
+    }
 }
