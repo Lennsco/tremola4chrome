@@ -417,7 +417,7 @@ function attack() {
 function getAttacked() {
     if (!playerLoramon?.isAlive() || !enemyLoramon?.isAlive()) return;
 
-    displayAttack(playerLoramon); // should be the receiving end, displayGetAttacked()
+    //displayAttack(playerLoramon); // should be the receiving end, displayGetAttacked()
      
     const effectiveness = enemyLoramon.attack(playerLoramon);
     showEffectivenessMessage(effectiveness);
@@ -581,7 +581,6 @@ function resetGame() { //we go back to select screen, no save, nothing
 
 function displayAttack(loramonAttack){
     const animation = document.getElementById("attack-animation");
-    let duration;
     let attackAnimation = "";
     switch (loramonAttack.element){
         case "fire":
@@ -590,9 +589,9 @@ function displayAttack(loramonAttack){
             animation.style.display = "block";
             animation.style.left = "170px";
             animation.style.top = "100px";
-            setTimeout(() => {
-            animation.style.display = "none";
-            },4300);
+            // setTimeout(() => {
+            // animation.style.display = "none";
+            // },4300);
             break;
         case "water":
             //attackAnimation = "../assets/water.gif";
@@ -601,9 +600,9 @@ function displayAttack(loramonAttack){
             animation.style.display = "block";
             animation.style.left = "270px";
             animation.style.top = "10px";
-            setTimeout(() => {
-            animation.style.display = "none";
-            },3500)
+            // setTimeout(() => {
+            // animation.style.display = "none";
+            // },3500)
             break;
         case "plant":
             attackAnimation = "../miniApps/LoRamon/assets/pflanze.gif";
@@ -612,10 +611,10 @@ function displayAttack(loramonAttack){
             animation.style.display = "block";
             animation.style.left = "150px";
             animation.style.top = "150px";
-            setTimeout(() => {
-            animation.style.display = "none";
-            },1250)
-            break;
+            // setTimeout(() => {
+            // animation.style.display = "none";
+            // },1250)
+            // break;
         default:
             console.warn("Unknown Loramon type: ", loramonAttack.element);
         }
